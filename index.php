@@ -11,8 +11,25 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2>Nova Verificação Estoque Rota</h2>
-        <form method="POST">
+        <h2>Selecionar Estado e Carregar suas Cidades com PHP, Jquery, Ajas e Json</h2>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label for="estado">Estado</label>
+									<select id="estado" name="estado" class="form-control">
+										<option value="">Selecione o estado</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="cidade">Cidade</label>
+									<select id="cidade" name="cidade" class="form-control">
+										<option value="">Selecione uma cidade</option>
+									</select>
+								</div>
+							</div>
+
 
             <input type="hidden" class="d-id_user" id="id_user" name="id_user" value="<?php echo($id); ?>">
 
@@ -20,14 +37,7 @@
             <div class="row form-row">
                 <div class="col-md-6">
                     <h4>Cliente:</h4>
-                    <select id="id_customer" name="id_customer" class="form-control mb-3" style="width: 100%;">
-                        <option value="">Selecione um Cliente</option>
-                        <?php foreach ($customers as $customer): ?>
-                            <option value="<?php echo $customer['id']; ?>">
-                                <?php echo htmlspecialchars($customer['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Documento</label>
@@ -144,84 +154,121 @@
         </table>
     </div>
 
-    <script>
-		$(document).ready(function() {
-			$('#id_customer').select2({
-				placeholder: "Selecione um Cliente",
-				allowClear: true,
-				width: '100%'
-			});
-			
-			
-			// Função para definir a data e hora atuais
-            function setCurrentDateTime() {
-                var now = new Date();
-                var year = now.getFullYear();
-                var month = String(now.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
-                var day = String(now.getDate()).padStart(2, '0');
-                var hours = String(now.getHours()).padStart(2, '0');
-                var minutes = String(now.getMinutes()).padStart(2, '0');
-                var datetimeStr = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+ 
+ <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Visita Checkin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Nova Verificação Estoque Rota</h2>
+        
 
-                $('#data_do_acerto').val(datetimeStr);
-                $('#data_retorno').val(datetimeStr); // Opcional, pode remover se não quiser preencher data_retorno
-            }
+			<div class="col-md-2">
+				<div class="form-group">
+					<label for="estado">Estado</label>
+					<select id="estado" name="estado" class="form-control">
+						<option value="">Selecione o estado</option>
+					</select>
+				</div>
+			</div>
 
-            // Chamar a função ao carregar a página
-            setCurrentDateTime();			
-			
-			
-			
-			
-			
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="cidade">Cidade</label>
+					<select id="cidade" name="cidade" class="form-control">
+						<option value="">Selecione uma cidade</option>
+					</select>
+				</div>
+			</div>		
+		
 
-			// Evento ao mudar a seleção do combobox
-			$('#id_customer').on('change', function() {
-                console.log('entrou................. ');
-				var customerId = $(this).val();
-                var id_user = $("#id_user").val();
+        <h2 class="mt-5">Lista de Visitas</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>CPF</th>
+                    <th>Endereço</th>
+                    <th>Data do Acerto</th>
+                    <th>Valor Vendido</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $records = $visitamostruario->readAll($id);
+                echo('<br/> id......... ' .$id);
+                foreach ($records as $record): ?>
+                    <tr>
+                        <td><?php echo $record['id']; ?></td>
+                        <td><?php echo $record['customer_name']; ?></td>
+                        <td><?php echo $record['document_number']; ?></td>
+                        <td><?php echo $record['endereco']; ?></td>
+                        <td><?php echo $record['data_do_acerto']; ?></td>
+                        <td><?php echo number_format($record['valor_vendido'], 2, ',', '.'); ?></td>
+                        <td><?php echo $record['status']; ?></td>
+                        <td>
+                            <a href="edit_visitamostruario.php?id=<?php echo $record['id']; ?>" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="delete_visitamostruario.php?id=<?php echo $record['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza?')">Excluir</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
-				console.log("customer_id.... " +customerId);
-				console.log('id_user.... ' +id_user);
 
-				if (customerId) {
-					// Requisição AJAX para buscar os dados do cliente
-					$.ajax({
-						url: 'get_customer_data.php', // Arquivo PHP que vai buscar os dados
-						type: 'POST',
-						data: { id: customerId, id_user: id_user },
-						dataType: 'json',
-						success: function(response) {
-							if (response.success) {
-								// Preencher os campos com os dados retornados
-								$('#document_number').val(response.data.document_number || '');
-								$('#endereco').val(response.data.address || '');
-								$('#bairro').val(response.data.neighbourhood || '');
-								$('#fone').val(response.data.phone_primary || '');
-								$('#cidade').val(response.data.city || '');
-								
-								$("#data_do_acerto").focus(); // Sets focus to the element with id "myInput"
-								setCurrentDateTime(); // Atualiza a data e hora ao sele
-							} else {
-								alert('Erro ao carregar os dados do cliente.');
-							}
-						},
-						error: function() {
-							alert('Erro na requisição AJAX.');
-						}
-					});
-				} else {
-					// Limpar os campos se nenhum cliente for selecionado
-					$('#document_number').val('');
-					$('#endereco').val('');
-					$('#bairro').val('');
-					$('#fone').val('');
-					$('#cidade').val('');
-					setCurrentDateTime(); // Reseta a data e hora se limpar o campo
-				}
-			});
-			
-		});
-    </script>
+
+<script>
+$(document).ready(function () {
+    // 1. Carrega estados ao carregar a página
+    $.getJSON("dados_estados_cidades.json", function (data) {
+        const estados = data.states;
+        $.each(estados, function (id, nome) {
+            $("#estado").append(`<option value="${id}">${nome}</option>`);
+        });
+    });
+
+    // 2. Ao mudar o estado, buscar cidades
+    $('#estado').on('change', function () {
+        const estadoId = $(this).val();
+
+        if (estadoId) {
+            $.ajax({
+                url: 'get_cidades_por_estado.php',
+                type: 'GET',
+                data: { estado_id: estadoId },
+                success: function (data) {
+                    let options = '<option value="">Selecione uma cidade</option>';
+                    data.forEach(function (cidade) {
+                        options += `<option value="${cidade.name}">${cidade.name}</option>`;
+                    });
+                    $('#cidade').html(options);
+                },
+                error: function () {
+                    alert('Erro ao carregar cidades.');
+                }
+            });
+        } else {
+            $('#cidade').html('<option value="">Selecione um estado primeiro</option>');
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>
+ 
 </body>
 </html>
